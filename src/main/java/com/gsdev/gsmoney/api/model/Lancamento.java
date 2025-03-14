@@ -32,8 +32,6 @@ public class Lancamento {
 
     private BigDecimal valor;
 
-    private String observacao;
-
     @Enumerated(EnumType.STRING)
     private TipoLancamento tipo;
 
@@ -83,14 +81,6 @@ public class Lancamento {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
     }
 
     public TipoLancamento getTipo() {
