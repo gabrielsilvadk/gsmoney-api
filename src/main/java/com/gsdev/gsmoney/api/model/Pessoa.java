@@ -1,5 +1,9 @@
 package com.gsdev.gsmoney.api.model;
 
+import java.beans.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -61,4 +65,9 @@ public class Pessoa {
         return ativo;
     }
 
+    @JsonIgnore
+    @Transient
+    public boolean isInativo(){
+        return !this.ativo;
+    }
 }

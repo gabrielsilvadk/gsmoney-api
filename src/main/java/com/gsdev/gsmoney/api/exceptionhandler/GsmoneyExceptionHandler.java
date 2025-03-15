@@ -66,17 +66,12 @@ public class GsmoneyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ DataIntegrityViolationException.class })
-    public ResponseEntity<Object> handleDataIntegrityViolationException(@NonNull DataIntegrityViolationException ex,
-            @NonNull WebRequest request) {
-        Throwable rootCause = ex.getRootCause();
-        logger.error("DataIntegrityViolationException: {}",
-                rootCause != null ? rootCause.getMessage() : ex.getMessage(), ex);
-        String mensagemUsuario = messageSource.getMessage("recurso.operacao-nao-permitida", null,
-                LocaleContextHolder.getLocale());
-        String mensagemDesenvolvedor = rootCause != null ? rootCause.getMessage() : ex.getMessage();
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
+        String mensagemUsuario = messageSource.getMessage("recurso.operacao-nao-permitida", null, LocaleContextHolder.getLocale());
+        String mensagemDesenvolvedor = ex.toString();
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
+      }
 
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(@NonNull Exception ex, @NonNull WebRequest request) {
