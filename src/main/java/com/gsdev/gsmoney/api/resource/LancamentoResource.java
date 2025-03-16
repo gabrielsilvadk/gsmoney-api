@@ -21,6 +21,7 @@ import com.gsdev.gsmoney.api.event.RecursoCriadoEvent;
 import com.gsdev.gsmoney.api.exceptionhandler.GsmoneyExceptionHandler.Erro;
 import com.gsdev.gsmoney.api.model.Lancamento;
 import com.gsdev.gsmoney.api.repository.LancamentoRepository;
+import com.gsdev.gsmoney.api.repository.filter.LancamentoFilter;
 import com.gsdev.gsmoney.api.service.LancamentoService;
 import com.gsdev.gsmoney.api.service.exception.PessoaInexistenteOuInativaException;
 
@@ -41,8 +42,8 @@ public class LancamentoResource {
     private MessageSource messageSource;
 
     @GetMapping
-    public List<Lancamento> listar() {
-        return lancamentoRepository.findAll();
+    public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
+        return lancamentoRepository.filtrar(lancamentoFilter);
     }
 
     @GetMapping("/{codigo}")
