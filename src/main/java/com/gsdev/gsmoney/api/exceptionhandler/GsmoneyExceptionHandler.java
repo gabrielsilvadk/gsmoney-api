@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,9 +24,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @ControllerAdvice
 public class GsmoneyExceptionHandler extends ResponseEntityExceptionHandler {
@@ -45,14 +44,12 @@ public class GsmoneyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({ EmptyResultDataAccessException.class })
-    public ResponseEntity<Object> handleEmptyResultDataAccessException(@NonNull EmptyResultDataAccessException ex,
-            @NonNull WebRequest request) {
-        String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null,
-                LocaleContextHolder.getLocale());
+    @ExceptionHandler({EmptyResultDataAccessException.class})
+    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
+        logger.error("EmptyResultDataAccessException capturada: {}", ex.toString());
+        String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.toString();
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
-        logger.error("EmptyResultDataAccessException: {}", mensagemDesenvolvedor);
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
@@ -65,15 +62,15 @@ public class GsmoneyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({ DataIntegrityViolationException.class })
+    @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         String mensagemUsuario = messageSource.getMessage("recurso.operacao-nao-permitida", null, LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.toString();
         List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-      }
+    }
 
-    @ExceptionHandler({ Exception.class })
+    @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(@NonNull Exception ex, @NonNull WebRequest request) {
         String mensagemUsuario = messageSource.getMessage("erro.interno-servidor", null,
                 LocaleContextHolder.getLocale());
@@ -96,6 +93,7 @@ public class GsmoneyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     public static class Erro {
+
         private String mensagemUsuario;
         private String mensagemDesenvolvedor;
 
