@@ -1,12 +1,12 @@
 package com.gsdev.gsmoney.api.model;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "categoria")
@@ -59,11 +59,7 @@ public class Categoria {
                 return false;
         } else if (!codigo.equals(other.codigo))
             return false;
-        if (nome == null) {
-            if (other.nome != null)
-                return false;
-        } else if (!nome.equals(other.nome))
-            return false;
+        // Removed redundant if statement for nome
         return true;
     }
 
