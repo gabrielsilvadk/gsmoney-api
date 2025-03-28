@@ -19,8 +19,8 @@ CREATE TABLE usuario_permissao(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO usuario (codigo, nome, email, senha) VALUES
-(1, 'admin', 'admin@example.com', '$2a$10$7Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q'), -- senha fictícia criptografada
-(2, 'Regular User', 'user@example.com', '$2a$10$7Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q');
+(1, 'admin', 'admin@gsmoney.com', 'teste123'),
+(2, 'Regular User', 'user@gsmoney.com', 'teste123');
 
 INSERT INTO permissao (codigo, descricao) VALUES
 (1, 'ROLE_CADASTRAR_CATEGORIA'),
