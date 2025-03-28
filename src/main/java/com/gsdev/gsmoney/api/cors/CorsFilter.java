@@ -2,9 +2,12 @@ package com.gsdev.gsmoney.api.cors;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import com.gsdev.gsmoney.api.config.property.GsmoneyApiProperty;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -19,7 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
 
-    private String originPermitida = "http://localhost:8000"; //configurar para diferentes ambientes(prod, staging)
+    @Autowired
+    private GsmoneyApiProperty gsmoneyApiProperty;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
@@ -28,10 +32,10 @@ public class CorsFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        response.setHeader("Access-Control-Allow-Origin", originPermitida);
+        response.setHeader("Access-Control-Allow-Origin", gsmoneyApiProperty.getOriginPermitida());
         response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        if ("OPTIONS".equals(request.getMethod()) && originPermitida.equals(request.getHeader("Origin"))) {
+        if ("OPTIONS".equals(request.getMethod()) && gsmoneyApiProperty.getOriginPermitida().equals(request.getHeader("Origin"))) {
 
             response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
             response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");

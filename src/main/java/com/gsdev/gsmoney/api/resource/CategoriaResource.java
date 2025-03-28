@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,22 +34,26 @@ public class CategoriaResource {
 
     @CrossOrigin
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
     public List<Categoria> listar() {
         return categoriaRepository.findAll();
     }
 
+    @CrossOrigin
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
     public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
         Categoria categoriasalva = categoriaRepository.save(categoria);
         publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriasalva.getCodigo()));
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriasalva);
-
     }
 
+    @CrossOrigin
     @GetMapping("/{codigo}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
     public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
-    Optional<Categoria> categoria = categoriaRepository.findById(codigo);
-    return categoria.map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-}
+        Optional<Categoria> categoria = categoriaRepository.findById(codigo);
+        return categoria.map(ResponseEntity::ok)
+                        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }

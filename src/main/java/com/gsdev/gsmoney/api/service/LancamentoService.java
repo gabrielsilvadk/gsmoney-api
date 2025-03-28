@@ -28,4 +28,12 @@ public class LancamentoService {
         return lancamentoRepository.save(lancamento);
     }
 
+    public Lancamento atualizar(Long codigo, Lancamento lancamento) {
+        Optional<Lancamento> lancamentoExistente = lancamentoRepository.findById(codigo);
+        if (!lancamentoExistente.isPresent()) {
+            throw new IllegalArgumentException("Lançamento não encontrado");
+        }
+        lancamento.setCodigo(codigo);
+        return salvar(lancamento);
+    }
 }
