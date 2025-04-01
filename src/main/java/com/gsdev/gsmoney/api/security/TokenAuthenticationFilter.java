@@ -37,11 +37,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         logger.info("Request URI: {}", request.getRequestURI());
         
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            final String token = authHeader.substring(7); // Remove "Bearer " prefix
-            logger.info("Token: {}", token);
-            
-            if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                try {
+            try {
+                final String token = authHeader.substring(7); // Remove "Bearer " prefix
+                logger.info("Token: {}", token);
+                
+                if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     String username = jwtTokenProvider.extractUsername(token);
                     logger.info("Username extraído do token: {}", username);
                     
@@ -60,14 +60,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                             logger.info("Permissões no SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication().getAuthorities());
                         } else {
                             logger.error("Token inválido para o usuário: {}", username);
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         }
                     }
-                } catch (Exception e) {
-                    logger.error("Erro ao processar token: {}", e.getMessage());
                 }
+            } catch (Exception e) {
+                logger.error("Erro ao processar token: {}", e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } else {
             logger.warn("Header de autorização não encontrado ou inválido");
+            if (!request.getRequestURI().startsWith("/auth/")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
         }
         
         filterChain.doFilter(request, response);
